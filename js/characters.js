@@ -299,8 +299,10 @@
     } else if (key === "cream") {
       ctx.fillStyle = "#fffdf5";
       for (let i = 0; i < 3; i++) {
+        // radius must scale with s so it never goes negative at small sizes
+        const r = Math.max(0.5, s * (0.32 - i * 0.07));
         ctx.beginPath();
-        ctx.arc(x + (i - 1) * s * 0.4, y, s * 0.32 - i * 2, 0, 7);
+        ctx.arc(x + (i - 1) * s * 0.4, y, r, 0, 7);
         ctx.fill();
       }
       ctx.beginPath();
