@@ -22,9 +22,15 @@
     let dt = now - last;
     last = now;
     if (dt > 60) dt = 60; // clamp after tab-switch / hitch
-    HK.engine.update(dt);
-    HK.render(ctx, now);
-    if (HK.state.mode !== lastMode) syncOverlay();
+    // never let a single bad frame kill the loop (which would freeze the
+    // game and make clicks stop registering) — log and keep going.
+    try {
+      HK.engine.update(dt);
+      HK.render(ctx, now);
+      if (HK.state.mode !== lastMode) syncOverlay();
+    } catch (err) {
+      console.error("frame error (recovered):", err);
+    }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

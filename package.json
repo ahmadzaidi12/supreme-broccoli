@@ -1,0 +1,9 @@
+{
+  "name": "flippin-chaos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A fast, chaotic, cute Hell's-Kitchen-style breakfast game (zero runtime deps).",
+  "scripts": {
+    "test": "node tests/logic.test.js && node tests/render.test.js"
+  }
+}

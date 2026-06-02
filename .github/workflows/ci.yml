@@ -1,0 +1,21 @@
+name: CI
+
+# Runs the test suite on every push and pull request. The tests are pure
+# Node (zero dependencies) and include render-safety checks that catch
+# canvas drawing bugs — e.g. a topping radius going negative at small
+# sizes, which previously froze the game and stopped clicks registering.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run tests
+        run: npm test

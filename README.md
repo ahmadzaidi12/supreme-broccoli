@@ -92,10 +92,18 @@ js/
   engine.js             # simulation: spawning, cooking, serving, scoring, powers
   input.js              # pointer + keyboard handling (touch friendly)
   main.js               # boot, game loop, overlay screens, PWA registration
+tests/
+  harness.js            # loads the game headlessly (stubs the browser)
+  strict-canvas.js      # canvas that throws on bad radii, like a real browser
+  logic.test.js         # gameplay sim: fire->cook->flip->plate->serve->clear
+  render.test.js        # renders every food/topping/character — catches draw bugs
 tools/
   gen_icons.py          # regenerate the app icons (pure stdlib PNG encoder)
-  smoketest.js          # headless logic test:  node tools/smoketest.js
+  repro.js              # real-click freeze repro in headless Chromium (Playwright)
   screenshot.js         # headless gameplay screenshots (needs Playwright)
+.github/workflows/
+  ci.yml                # runs `npm test` on every push + PR
+  pages.yml             # deploys to GitHub Pages on push to main
 ```
 
 ### Extending the menu
@@ -103,8 +111,21 @@ Adding a breakfast item, flavor, topping, or a whole new night is mostly a
 **data change in `js/config.js`** — the engine is generic. New food just needs
 a small draw routine in `characters.js`.
 
-### Dev checks
+### Tests
+Pure-Node, zero dependencies, and run in CI on every push/PR:
 ```bash
-node tools/smoketest.js     # simulates a perfect service, asserts it clears
-python3 tools/gen_icons.py  # rebuild app icons
+npm test                    # logic + render-safety suites
+```
+- **logic** — drives a perfect service and asserts the loop clears a night,
+  plus combo/penalty/burn rules.
+- **render** — draws every item × flavor × topping and every character at all
+  sizes through a *strict canvas* that throws on negative/non-finite radii.
+  This catches the class of bug that once froze the game (a whipped-cream
+  dollop radius going negative when a server carried the dish at a small size,
+  which threw inside the animation loop and stopped clicks registering).
+
+Deeper local end-to-end (needs Playwright):
+```bash
+python3 -m http.server 8000 & node tools/repro.js   # real-click freeze repro
+python3 tools/gen_icons.py                           # rebuild app icons
 ```
