@@ -1,7 +1,7 @@
 /* Service worker for Flippin' Chaos.
  * Precaches the whole game shell so it installs as a PWA and plays
  * fully offline. Bump CACHE when assets change to refresh clients. */
-const CACHE = "flippin-chaos-v1";
+const CACHE = "flippin-chaos-v2";
 const ASSETS = [
   "./",
   "./index.html",
